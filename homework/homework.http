@@ -1,0 +1,42 @@
+@host = http://localhost:5122
+# Вставьте сюда accessToken из ответа на login
+@token = 
+
+### 1. Регистрация (один раз после каждого запуска)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "student@example.com", "password": "12345678", "passwordConfirm": "12345678" }
+
+### 2. Получить JWT
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "student@example.com", "password": "12345678" }
+
+### 3. GET без токена → 200
+GET {{host}}/api/products
+
+### 4. POST без токена → 401
+POST {{host}}/api/products
+Content-Type: application/json
+
+{ "name": "Мышь", "price": 8000, "category": { "id": 1, "name": "Периферия" } }
+
+### 5. POST с токеном → 200, createdBy
+POST {{host}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "name": "Мышь", "price": 8000, "category": { "id": 1, "name": "Периферия" } }
+
+### 6. GET по Id
+GET {{host}}/api/products/1
+
+### 7. DELETE с токеном → 204
+DELETE {{host}}/api/products/1
+Authorization: Bearer {{token}}
+
+### 8. Изменённый токен (дописан лишний символ) → 401
+DELETE {{host}}/api/products/1
+Authorization: Bearer {{token}}x

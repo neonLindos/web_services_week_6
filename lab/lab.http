@@ -1,0 +1,46 @@
+@host = http://localhost:5161
+# Вставьте сюда accessToken из ответа на login
+@token = 
+
+### 1. Получить JWT
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "student", "password": "12345" }
+
+### 2. Неверный пароль → 401
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "student", "password": "wrong" }
+
+### 3. GET без токена → 200
+GET {{host}}/api/tasks
+
+### 4. GET по Id без токена → 200
+GET {{host}}/api/tasks/1
+
+### 5. POST без токена → 401
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{ "title": "Без токена", "description": "", "isCompleted": false }
+
+### 6. POST с JWT → 201 и createdBy
+POST {{host}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "title": "Сдать лабораторную", "description": "Модуль 06", "isCompleted": false }
+
+### 7. DELETE с JWT → 204
+DELETE {{host}}/api/tasks/1
+Authorization: Bearer {{token}}
+
+### 8. Claims токена
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### 9. Изменённый токен (дописан лишний символ) → 401
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}x

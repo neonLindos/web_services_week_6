@@ -1,0 +1,31 @@
+@host = http://localhost:5162
+# Вставьте сюда accessToken из ответа на login
+@token = 
+
+### Задание 1–2. Без ключа → 401
+GET {{host}}/api/product
+
+### Неверный ключ → 401
+GET {{host}}/api/product
+X-Api-Key: wrong
+
+### Верный ключ → 200
+GET {{host}}/api/product
+X-Api-Key: SecretKey123
+
+### Задание 4. Получить JWT
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "student", "password": "12345" }
+
+### Задание 5. Защищённый метод без токена → 401
+GET {{host}}/api/product/secure
+
+### Задание 6. С токеном → 200
+GET {{host}}/api/product/secure
+Authorization: Bearer {{token}}
+
+### Задание 7. Изменённый токен (дописан лишний символ) → 401
+GET {{host}}/api/product/secure
+Authorization: Bearer {{token}}x
